@@ -5,35 +5,14 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = 'asc') {
-    let buffer = '';
     let sortArr = [...arr];
-    let isSorted = false;
     let collator = new Intl.Collator('ru-RU', {caseFirst: "upper"});
-    if (param === 'asc') {
-        while (!isSorted) {
-            isSorted = true;
-            for (let i = 0; i < sortArr.length - 1; i++) {
-                if (collator.compare(sortArr[i], sortArr[i+1]) === 1) {
-                    isSorted = false;
-                    buffer = sortArr[i];
-                    sortArr[i] = sortArr[i+1];
-                    sortArr[i+1] = buffer;
-                }
-            }
+    sortArr.sort( function (a, b) {
+        if (param === 'asc') {
+            return collator.compare(a, b);
+        } else {
+            return collator.compare(b, a);
         }
-        return sortArr; 
-    } else if (param === 'desc') {
-        while (!isSorted) {
-            isSorted = true;
-            for (let i = 0; i < sortArr.length - 1; i++) {
-                if (collator.compare(sortArr[i], sortArr[i+1]) === -1) {
-                    isSorted = false;
-                    buffer = sortArr[i+1];
-                    sortArr[i+1] = sortArr[i];
-                    sortArr[i] = buffer;
-                }
-            }
-        } 
-        return sortArr;
-    }
+      })
+    return sortArr;
 }
