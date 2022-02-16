@@ -5,8 +5,8 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = 'asc') {
-    let sortArr = [...arr];
-    let collator = new Intl.Collator('ru-RU', {caseFirst: "upper"});
+    const sortArr = [...arr];
+    const collator = new Intl.Collator('ru-RU', {caseFirst: "upper"});
     sortArr.sort( function (a, b) {
         if (param === 'asc') {
             return collator.compare(a, b);
