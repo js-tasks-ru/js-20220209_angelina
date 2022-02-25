@@ -6,12 +6,12 @@
 export function createGetter(path) {
     const pathArr = path.split('.');
 
-    return function(obj) {
-        if (Object.keys(obj).length === 0) {
-            return;
-        } 
-        let innerObj = {...obj}
-        for (let key of pathArr) {
+    return obj => {
+        let innerObj = obj;
+
+        for (const key of pathArr) {
+            if (innerObj === undefined) break;
+
             innerObj = innerObj[key];
         }
         return innerObj;
