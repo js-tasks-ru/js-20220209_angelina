@@ -1,6 +1,5 @@
 export default class NotificationMessage {
-    // static duration;
-    static counter = 0;;
+    static activeNotification; // undefined
 
     constructor(message = '',
         {
@@ -10,14 +9,14 @@ export default class NotificationMessage {
             this.message = message;
             this.duration = duration;
             this.type = type;
-            NotificationMessage.counter++;
+            this.durationInSeconds = (duration / 1000) + 's';
 
             this.render();
     }
 
     getTemplate() {
         return `
-        <div class="notification" style="--value:20s">
+        <div class="notification" style="--value:${this.durationInSeconds}">
             <div class="timer"></div>
             <div class="inner-wrapper">
                 <div class="notification-header">${this.type}</div>
@@ -41,16 +40,32 @@ export default class NotificationMessage {
         }
     }
 
-    show(parentElement = {}) {
-        if (NotificationMessage.counter < 2) {
-            parentElement ? parentElement.append(this.element) : document.body.append(this.element);
+    show(parentElement = document.body) {
+        if (NotificationMessage.activeNotification) {
+            NotificationMessage.activeNotification.remove();
         }
-        // update timer
-        this.element.style["--value"] = '20s';
-        console.log(this.element.style);
+
+        parentElement.append(this.element);
+
+        this.timerId = setTimeout(() => {
+            this.remove();
+        }, this.duration);
+
+        NotificationMessage.activeNotification = this;
+    }
+
+    remove() {
+        clearTimeout(this.timerId);
+
+        if (this.element) {
+            this.element.remove();
+        }
+        
     }
 
     destroy() {
-        this.element.remove();
+        this.remove();
+        this.element = null;
+        NotificationMessage.activeNotification = null;
     }
 }
